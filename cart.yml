@@ -46,6 +46,6 @@
         name: cart
         state: restarted
         enabled: yes
-        daemon_reload: yes
+        daemon-reload: yes
 
 

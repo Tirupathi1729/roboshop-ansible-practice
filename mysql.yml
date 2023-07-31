@@ -1,0 +1,27 @@
+- name: mysql setup
+  hosts: all
+  become: true
+  tasks:
+    - name: copy mysql repo file
+      ansible.builtin.copy:
+        src: mysql.repo
+        dest: /etc/yum.repos.d/mysql.repo
+
+    - name: disable default version of mysql
+      ansible.builtin.shell: yum module disable mysql -y
+
+    - name: install mysql community server
+      ansible.builtin.yum:
+        name: mysql-community-server
+        state: installed
+
+    - name: start my sql server
+      ansible.builtin.systemd:
+        name: mysqld
+        state: restarted
+        enabled: yes
+        daemon-reload: yes
+
+    - name: set root password
+      ansible.builtin.shell: mysql_secure_installation --set-root-pass RoboShop@1
+
