@@ -1,0 +1,64 @@
+- name: user setup
+  hosts: all
+  become: true
+  tasks:
+    - name: copy service file
+      ansible.builtin.copy:
+        src: user.service
+        dest: /etc/systemd/system/catalogue.service
+
+    - name: download repo file
+      ansible.builtin.shell: curl -sL https://rpm.nodesource.com/setup_lts.x | bash
+
+    - name: install nodejs
+      ansible.builtin.yum:
+        name: nodejs
+        state: installed
+
+    - name: add user
+      ansible.builtin.user:
+        name: roboshop
+
+    - name: remove directory
+      ansible.builtin.file:
+        path: /app
+        state: absent
+
+    - name: add directory
+      ansible.builtin.file:
+        path: /app
+        state: directory
+
+    - name: download and unzip the content
+      ansible.builtin.unarchive:
+        src: https://roboshop-artifacts.s3.amazonaws.com/catalogue.zip
+        dest: /app
+        remote_src: yes
+
+
+    - name: install dependencies
+      ansible.builtin.shell: npm install
+      args:
+        chdir: /app
+
+    - name: Copy MongoDB Yum Repo File
+      ansible.builtin.copy:
+        src: mongo.repo
+        dest: /etc/yum.repos.d/mongo.repo
+
+    - name: install mongodb
+      ansible.builtin.yum:
+        name: mongodb-org-shell
+        state: installed
+
+    - name: load schema
+      ansible.builtin.shell: mongo --host mongodb.tirupathib74.online </app/schema/catalogue.js
+
+    - name: start catalogue service
+      ansible.builtin.systemd:
+        name: user
+        state: restarted
+        enabled: yes
+        daemon-reload: yes
+
+
