@@ -43,7 +43,7 @@
         state: installed
 
     - name: set password
-      ansible.builtin.shell: mysql -h mysql.tirupathib74.online -uroot -pRoboShop@1 < /app/schema/shipping.sql
+      ansible.builtin.shell: mysql -h mysql-dev.tirupathib74.online -uroot -pRoboShop@1 < /app/schema/shipping.sql
 
     - name: start shipping
       ansible.builtin.systemd:
