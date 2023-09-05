@@ -52,9 +52,9 @@
         state: installed
 
     - name: load schema
-      ansible.builtin.shell: mongo --host mongodb.tirupathib74.online </app/schema/catalogue.js
+      ansible.builtin.shell: mongo --host mongodb.tirupathib74.online </app/schema/user.js
 
-    - name: start catalogue service
+    - name: start user service
       ansible.builtin.systemd:
         name: user
         state: restarted
